@@ -1,10 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Routes from './router';
 
 function App() {
   return (
-    <h1>teste!</h1>
+    <Routes />
   );
 }
 
