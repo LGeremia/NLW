@@ -16,7 +16,7 @@ class PointsController{
         } = request.body;
 
         const point = {
-            image: "image-fake",
+            image: "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
             name,
             whatsapp,
             email,
