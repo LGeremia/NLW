@@ -7,7 +7,7 @@ import { Map, TileLayer, Marker } from 'react-leaflet';
 import api from '../../services/api';
 import axios from 'axios'
 import {LeafletMouseEvent} from 'leaflet';
-import { Evented } from 'leaflet';
+import Dropzone from '../../components/dropzone';
 // array ou objeto: manualmente informar o tipo da vairável
 
 interface Item{
@@ -39,6 +39,7 @@ const CreatePoint = ()  =>{
     const [selectedPosition, setSelectedPosition] = useState<[number,number]>([0,0]);
     const [initialPosition, setInitialPosition] = useState<[number,number]>([0,0]);
     const history = useHistory();
+    const [selectedFile, setSelectedFile] = useState<File>();
 
     useEffect(() => {
         api.get('items').then(response =>{
@@ -70,7 +71,7 @@ const CreatePoint = ()  =>{
     }
 
     function handleSelectItem(id:number){
-        const alreadySelected = selectedItems.findIndex(item => item == id);
+        const alreadySelected = selectedItems.findIndex(item => item === id);
 
         if(alreadySelected >= 0){
             const filteredItems = selectedItems.filter(item => item !== id);
@@ -88,16 +89,21 @@ const CreatePoint = ()  =>{
         const city = selectedCity;
         const [latitude, longitude] = selectedPosition;
         const items = selectedItems;
-        const data = {
-            name,
-            email,
-            whatsapp,
-            uf,
-            city,
-            latitude,
-            longitude,
-            items
-        };
+        const data = new FormData();
+
+        data.append('name', name);
+        data.append('email', email);
+        data.append('whatsapp', whatsapp);
+        data.append('uf', uf);
+        data.append('city', city);
+        data.append('latitude', String(latitude));
+        data.append('longitude', String(longitude));
+        data.append('items', items.join(','));
+        
+        if (selectedFile){
+            data.append('image', selectedFile);
+        }
+
         await api.post('points', data)
 
         alert('Criado ponto de coleta!')
@@ -143,6 +149,7 @@ const CreatePoint = ()  =>{
             </header>
             <form onSubmit={handleSubmit}>
                 <h1>Cadastro do ponto de Coleta:</h1>
+                <Dropzone onFileUploaded={setSelectedFile} />    
                 <fieldset>
                     <legend>
                         <h2>
